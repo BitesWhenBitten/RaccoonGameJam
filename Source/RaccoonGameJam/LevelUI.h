@@ -20,9 +20,11 @@ public:
 	void Setup();
 
 	UFUNCTION()
-	void TimerExpired(bool bGameWon);
+	void GameOver(bool bGameWon);
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	virtual bool Initialize() override;
+
 
 protected:
 
@@ -33,10 +35,31 @@ protected:
 	UPROPERTY(BlueprintReadonly)
 	bool isGamePlaying = true;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* EndText;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* RetryButton;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* QuitButton;
+
 private:
 
 	class ARaccoonGameJamGameMode* GameMode;
 
+	UFUNCTION()
+	void RetryLevelButtonClicked();
+	UFUNCTION()
+	void QuitGameButtonClicked();
+
+	void TurnOnButtons();
+
+	void GameWon();
+	void GameLost();
+
+	void SetInputToPaused();
+	void SetInputToInPlay();
 
 
 };

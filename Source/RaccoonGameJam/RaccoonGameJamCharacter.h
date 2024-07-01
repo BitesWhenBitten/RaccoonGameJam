@@ -86,24 +86,26 @@ public:
 
 	UFUNCTION(BlueprintCallable) void ResetTrashInventory();
 
-	void ChangeTrashIndex(int index, int amountChanged);
+	UFUNCTION(BlueprintCallable)
+	float GetTrashSum();
+
 private:
 
-	UFUNCTION(BlueprintCallable) void SelectTrash(AActor* trash);
+	UFUNCTION(BlueprintCallable) void SelectTrash(UObject* trash);
 
-	UFUNCTION(BlueprintCallable) void DeSelectTrash(AActor* trash, bool fromCollision);
+	UFUNCTION(BlueprintCallable) void DeSelectTrash(UObject* trash, bool fromCollision);
 
 	APlayerController* PlayerController;
 
-	AActor* selectedTrash;
+	UObject* selectedTrash;
 
-	UPROPERTY(EditAnywhere, category = "trashInventory", meta = (Tooltip = "the structure that holds trash to be scored or removed"))
+	UPROPERTY(VisibleAnywhere, category = "trashInventory", meta = (Tooltip = "the structure that holds trash to be scored or removed"))
 	TArray<int> trashInventory;
 
-	UPROPERTY(EditAnywhere,category = "trashInventory", meta = (Tooltip = "the value of each piece of trash in the trash inventory"))
+	UPROPERTY(VisibleAnywhere,category = "trashInventory", meta = (Tooltip = "the value of each piece of trash in the trash inventory"))
 	TArray<float> trashValues;
 	//the sum value of all trash 
-	float trashSum;
+	float trashSum ;
 
 	
 };

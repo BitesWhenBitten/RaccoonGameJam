@@ -11,7 +11,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "TrashComponent.h"
 
 DEFINE_LOG_CATEGORY(LogCharacter);
 
@@ -151,17 +150,8 @@ void ARaccoonGameJamCharacter::PickupItem(const FInputActionValue& Value)
 		);
 	}
 	//addTrashByIndex(getIndex)
-	if (selectedTrash == NULL || !selectedTrash->FindComponentByClass<UTrashComponent>())
-	{
-		return;
-	}
-
-	AddTrashByIndex(selectedTrash->FindComponentByClass<UTrashComponent>()->GetIndex() );
-	
 	//destroy item
-	selectedTrash->ConditionalBeginDestroy();
 	//Remove Deselect Item
-	selectedTrash = NULL;
 
 }
 
@@ -177,7 +167,8 @@ void ARaccoonGameJamCharacter::AddTrashByIndex(int index) {
 	if (index >= trashInventory.Num() || index < 0) {
 		return;
 	}
-	ChangeTrashIndex(index, 1);
+	trashInventory[index]++;
+	trashSum += trashValues[index];
 }
 
 void ARaccoonGameJamCharacter::RemoveTrashByIndex(int index) {
@@ -185,7 +176,8 @@ void ARaccoonGameJamCharacter::RemoveTrashByIndex(int index) {
 		return;
 
 	}
-	ChangeTrashIndex(index,-1);
+	trashInventory[index]--;
+	trashSum -= trashValues[index];
 }
 
 void ARaccoonGameJamCharacter::ResetTrashInventory() {
@@ -196,32 +188,27 @@ void ARaccoonGameJamCharacter::ResetTrashInventory() {
 	trashSum = 0;
 }
 
+float ARaccoonGameJamCharacter::GetTrashSum()
+{
+	return trashSum;
+}
+
 void ARaccoonGameJamCharacter::RemoveMultipleTrash(int index, int amount) {
 	if (index >= trashInventory.Num() || index < 0 || trashInventory[index <= 0] || trashInventory[index] < amount) {
 		return;
 
 	}
-	ChangeTrashIndex(index, amount);
+	trashInventory[index] -= amount;
+	trashSum -= (trashValues[index] * amount);
 }
 
-void ARaccoonGameJamCharacter::SelectTrash(AActor* trash) {
+void ARaccoonGameJamCharacter::SelectTrash(UObject* trash) {
 	//if trash
-	if (selectedTrash->FindComponentByClass<UTrashComponent>()) {
-		selectedTrash = trash;
-	}
-
+	selectedTrash = trash;
 }
 
-void ARaccoonGameJamCharacter::DeSelectTrash(AActor* trash, bool fromCollision) {
+void ARaccoonGameJamCharacter::DeSelectTrash(UObject* trash, bool fromCollision) {
 	//if trash is collided object && from collision || 
-	if (selectedTrash != trash && fromCollision) {
-		return;
-	}
 	selectedTrash = NULL;
-}
-
-void ARaccoonGameJamCharacter::ChangeTrashIndex(int index, int amountChanged) {
-	trashInventory[index] += amountChanged;
-	trashSum += (trashValues[index] * amountChanged);
 }
 
